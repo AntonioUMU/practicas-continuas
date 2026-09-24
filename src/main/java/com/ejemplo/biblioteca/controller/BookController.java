@@ -47,7 +47,6 @@ public class BookController {
   @PatchMapping("/{id}/availability")
   public Book updateAvailability(
       @PathVariable Long id, @Valid @RequestBody AvailabilityRequest request) {
-
     return service.updateAvailability(id, request.available());
   }
 }
