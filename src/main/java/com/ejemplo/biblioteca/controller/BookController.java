@@ -44,4 +44,10 @@ public class BookController {
     public void delete(@PathVariable Long id) {
         service.delete(id);
     }
+
+    @PatchMapping("/{id}/availability")
+    public Book updateAvailability(@PathVariable Long id, @Valid @RequestBody AvailabilityRequest request) {
+        return service.updateAvailability(id, request.available());
+    }
+
 }

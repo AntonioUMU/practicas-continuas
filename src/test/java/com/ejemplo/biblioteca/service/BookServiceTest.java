@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -158,6 +159,48 @@ class BookServiceTest {
 
         assertEquals(2, service.findAll().size());
         verify(repository).findAll();
+    }
+
+    @Test
+    void updateAvailabilityShouldMarkBookAsLoaned() {
+        Book book = validBook();
+        book.setId(1L);
+        book.setAvailable(true);
+
+        when(repository.findById(1L)).thenReturn(Optional.of(book));
+        when(repository.save(book)).thenReturn(book);
+
+        Book result = service.updateAvailability(1L, false);
+
+        assertFalse(result.getAvailable());
+        verify(repository).save(book);
+    }
+
+    @Test
+    void updateAvailabilityShouldMarkBookAsAvailable() {
+        Book book = validBook();
+        book.setId(1L);
+        book.setAvailable(false);
+
+        when(repository.findById(1L)).thenReturn(Optional.of(book));
+        when(repository.save(book)).thenReturn(book);
+
+        Book result = service.updateAvailability(1L, true);
+
+        assertTrue(result.getAvailable());
+        verify(repository).save(book);
+    }
+
+    @Test
+    void updateAvailabilityShouldThrowWhenBookDoesNotExist() {
+        when(repository.findById(999L)).thenReturn(Optional.empty());
+
+        assertThrows(
+            BookNotFoundException.class,
+            () -> service.updateAvailability(999L, true)
+        );
+
+        verify(repository, never()).save(any());
     }
 
     private Book validBook() {

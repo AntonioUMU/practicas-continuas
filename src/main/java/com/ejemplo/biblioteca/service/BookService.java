@@ -63,6 +63,12 @@ public class BookService {
         repository.delete(existing);
     }
 
+    public Book updateAvailability(Long id, Boolean available) {
+        Book book = findById(id);
+        book.setAvailable(available);
+        return repository.save(book);
+    }
+
     private void validateBusinessRules(Book book, Long currentId) {
         if (book.getPublicationYear() != null
                 && book.getPublicationYear() > Year.now().getValue()) {
