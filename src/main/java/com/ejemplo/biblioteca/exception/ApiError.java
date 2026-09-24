@@ -9,6 +9,4 @@ public record ApiError(
     String error,
     String message,
     String path,
-    Map<String, String> validationErrors
-) {
-}
+    Map<String, String> validationErrors) {}
