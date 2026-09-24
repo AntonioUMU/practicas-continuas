@@ -16,8 +16,8 @@ public class BookService {
 
   private final BookRepository repository;
 
-  public BookService(BookRepository repository) {
-    this.repository = repository;
+  public BookService(BookRepository _repository) {
+    this.repository = _repository;
   }
 
   @Transactional(readOnly = true)
