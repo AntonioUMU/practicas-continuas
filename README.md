@@ -48,6 +48,7 @@ Además de las validaciones Bean Validation del recurso `Book`, el servicio apli
 | POST | `/api/books` | Crea un libro |
 | PUT | `/api/books/{id}` | Actualiza un libro |
 | DELETE | `/api/books/{id}` | Elimina un libro |
+| PATCH | `/api/books/{id}/availability` | Cambia la disponibilidad de un libro |
 
 Ejemplo de `POST /api/books`:
 
@@ -59,6 +60,14 @@ Ejemplo de `POST /api/books`:
   "publicationYear": 2008,
   "pages": 464,
   "available": true
+}
+```
+
+Ejemplo de `PATCH /api/books/{id}/availability`:
+
+```json
+{
+  "available": false
 }
 ```
 
