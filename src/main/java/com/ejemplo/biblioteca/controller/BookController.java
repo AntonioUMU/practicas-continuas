@@ -18,8 +18,8 @@ public class BookController {
   }
 
   @GetMapping
-  public List<Book> findAll() {
-    return service.findAll();
+  public List<Book> findAll(@RequestParam(name = "title", required = false) String title) {
+    return service.searchByTitle(title);
   }
 
   @GetMapping("/{id}")
