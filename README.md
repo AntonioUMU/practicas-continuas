@@ -45,6 +45,7 @@ Además de las validaciones Bean Validation del recurso `Book`, el servicio apli
 |---|---|---|
 | GET | `/api/books` | Lista todos los libros |
 | GET | `/api/books/{id}` | Obtiene un libro |
+| GET | `/api/books?title=texto` | Busca por parte del título, sin distinguir mayúsculas y minúsculas |
 | POST | `/api/books` | Crea un libro |
 | PUT | `/api/books/{id}` | Actualiza un libro |
 | DELETE | `/api/books/{id}` | Elimina un libro |
@@ -69,6 +70,14 @@ Ejemplo de `PATCH /api/books/{id}/availability`:
 {
   "available": false
 }
+```
+
+### Búsqueda por título
+
+El parámetro `title` es opcional. Si se omite o solo contiene espacios, se devuelven todos los libros. Si no hay coincidencias, se devuelve una lista vacía.
+
+```bash
+curl 'http://localhost:8080/api/books?title=clean'
 ```
 
 ## Compilar y ejecutar

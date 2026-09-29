@@ -26,6 +26,15 @@ public class BookService {
   }
 
   @Transactional(readOnly = true)
+  public List<Book> searchByTitle(String title) {
+    if (title == null || title.isBlank()) {
+      return findAll();
+    }
+
+    return repository.findByTitleContainingIgnoreCase(title.strip());
+  }
+
+  @Transactional(readOnly = true)
   public Book findById(Long id) {
     return repository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
   }

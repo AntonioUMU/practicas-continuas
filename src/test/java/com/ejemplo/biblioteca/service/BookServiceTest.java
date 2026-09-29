@@ -2,6 +2,7 @@ package com.ejemplo.biblioteca.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 import com.ejemplo.biblioteca.domain.Book;
@@ -195,6 +196,42 @@ class BookServiceTest {
     assertThrows(BookNotFoundException.class, () -> service.updateAvailability(999L, true));
 
     verify(repository, never()).save(any());
+  }
+
+  @Test
+  void searchByTitleShouldReturnAllWhenTitleIsMissing() {
+    List<Book> books = List.of(validBook());
+    when(repository.findAll()).thenReturn(books);
+
+    assertEquals(books, service.searchByTitle(null));
+    verify(repository).findAll();
+    verify(repository, never()).findByTitleContainingIgnoreCase(anyString());
+  }
+
+  @Test
+  void searchByTitleShouldReturnAllWhenTitleIsBlank() {
+    List<Book> books = List.of(validBook());
+    when(repository.findAll()).thenReturn(books);
+
+    assertEquals(books, service.searchByTitle("   "));
+    verify(repository).findAll();
+  }
+
+  @Test
+  void searchByTitleShouldTrimTermAndReturnMatches() {
+    List<Book> matches = List.of(validBook());
+    when(repository.findByTitleContainingIgnoreCase("cLeAn")).thenReturn(matches);
+
+    assertEquals(matches, service.searchByTitle("  cLeAn  "));
+    verify(repository).findByTitleContainingIgnoreCase("cLeAn");
+    verify(repository, never()).findAll();
+  }
+
+  @Test
+  void searchByTitleShouldReturnEmptyListWhenNothingMatches() {
+    when(repository.findByTitleContainingIgnoreCase("inexistente")).thenReturn(List.of());
+
+    assertTrue(service.searchByTitle("inexistente").isEmpty());
   }
 
   private Book validBook() {
