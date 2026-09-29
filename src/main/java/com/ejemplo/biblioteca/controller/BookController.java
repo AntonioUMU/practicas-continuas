@@ -4,6 +4,7 @@ import com.ejemplo.biblioteca.domain.Book;
 import com.ejemplo.biblioteca.service.BookService;
 import jakarta.validation.Valid;
 import java.util.List;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,12 @@ public class BookController {
   @GetMapping
   public List<Book> findAll() {
     return service.findAll();
+  }
+
+  @GetMapping
+  public Page<Book> findAll(
+      @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+    return service.findAll(page, size);
   }
 
   @GetMapping("/{id}")
