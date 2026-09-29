@@ -18,6 +18,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 @ExtendWith(MockitoExtension.class)
 class BookServiceTest {
@@ -199,6 +202,50 @@ class BookServiceTest {
   }
 
   @Test
+  void findAll_shouldReturnRequestedPage() {
+    List<Book> books = List.of(createBook(1L, "Clean Code"), createBook(2L, "Effective Java"));
+
+    Page<Book> expectedPage = new PageImpl<>(books, PageRequest.of(0, 2), 5);
+
+    when(repository.findAll(PageRequest.of(0, 2))).thenReturn(expectedPage);
+
+    Page<Book> result = service.findAll(0, 2);
+
+    assertEquals(2, result.getContent().size());
+    assertEquals(5, result.getTotalElements());
+    assertEquals(0, result.getNumber());
+    assertEquals(2, result.getSize());
+
+    verify(repository).findAll(PageRequest.of(0, 2));
+  }
+
+  @Test
+  void findAll_shouldReturnSecondPage() {
+    List<Book> books =
+        List.of(createBook(3L, "Refactoring"), createBook(4L, "Java Concurrency in Practice"));
+
+    Page<Book> expectedPage = new PageImpl<>(books, PageRequest.of(1, 2), 4);
+
+    when(repository.findAll(PageRequest.of(1, 2))).thenReturn(expectedPage);
+
+    Page<Book> result = service.findAll(1, 2);
+
+    assertEquals(2, result.getContent().size());
+    assertEquals(4, result.getTotalElements());
+    assertEquals(1, result.getNumber());
+    assertEquals(2, result.getSize());
+
+    verify(repository).findAll(PageRequest.of(1, 2));
+  }
+
+  @Test
+  void findAll_shouldRejectInvalidPageSize() {
+    assertThrows(IllegalArgumentException.class, () -> service.findAll(0, 0));
+
+    verifyNoInteractions(repository);
+  }
+  
+  @Test
   void searchByTitleShouldReturnAllWhenTitleIsMissing() {
     List<Book> books = List.of(validBook());
     when(repository.findAll()).thenReturn(books);
@@ -236,5 +283,17 @@ class BookServiceTest {
 
   private Book validBook() {
     return new Book(null, "Clean Code", "Robert C. Martin", "9780132350884", 2008, 464, true);
+  }
+
+  private Book createBook(Long id, String title) {
+    Book book = new Book();
+    book.setId(id);
+    book.setTitle(title);
+    book.setAuthor("Autor");
+    book.setIsbn("9780132350884");
+    book.setPublicationYear(2020);
+    book.setPages(300);
+    book.setAvailable(true);
+    return book;
   }
 }

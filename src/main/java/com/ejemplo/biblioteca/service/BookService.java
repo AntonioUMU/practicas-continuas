@@ -7,6 +7,8 @@ import com.ejemplo.biblioteca.exception.DuplicateIsbnException;
 import com.ejemplo.biblioteca.repository.BookRepository;
 import java.time.Year;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +20,10 @@ public class BookService {
 
   public BookService(BookRepository _repository) {
     this.repository = _repository;
+  }
+
+  public Page<Book> findAll(int page, int size) {
+    return repository.findAll(PageRequest.of(page, size));
   }
 
   @Transactional(readOnly = true)
