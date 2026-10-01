@@ -244,7 +244,7 @@ class BookServiceTest {
 
     verifyNoInteractions(repository);
   }
-  
+
   @Test
   void searchByTitleShouldReturnAllWhenTitleIsMissing() {
     List<Book> books = List.of(validBook());
