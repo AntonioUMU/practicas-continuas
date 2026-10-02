@@ -18,8 +18,8 @@ public class BookService {
 
   private final BookRepository repository;
 
-  public BookService(BookRepository _repo) {
-    this.repository = _repo;
+  public BookService(BookRepository repository) {
+    this.repository = repository;
   }
 
   public Page<Book> findAll(int page, int size) {
