@@ -281,6 +281,43 @@ class BookServiceTest {
     assertTrue(service.searchByTitle("inexistente").isEmpty());
   }
 
+  @Test
+  void searchByAuthorShouldReturnAllWhenAuthorIsMissing() {
+    List<Book> books = List.of(validBook());
+    when(repository.findAll()).thenReturn(books);
+
+    assertEquals(books, service.searchByAuthor(null));
+    verify(repository).findAll();
+    verify(repository, never()).findByAuthorContainingIgnoreCase(anyString());
+  }
+
+  @Test
+  void searchByAuthorShouldReturnAllWhenAuthorIsBlank() {
+    List<Book> books = List.of(validBook());
+    when(repository.findAll()).thenReturn(books);
+
+    assertEquals(books, service.searchByAuthor("   "));
+    verify(repository).findAll();
+    verify(repository, never()).findByAuthorContainingIgnoreCase(anyString());
+  }
+
+  @Test
+  void searchByAuthorShouldTrimTermAndReturnMatches() {
+    List<Book> matches = List.of(validBook());
+    when(repository.findByAuthorContainingIgnoreCase("mArTiN")).thenReturn(matches);
+
+    assertEquals(matches, service.searchByAuthor("  mArTiN  "));
+    verify(repository).findByAuthorContainingIgnoreCase("mArTiN");
+    verify(repository, never()).findAll();
+  }
+
+  @Test
+  void searchByAuthorShouldReturnEmptyListWhenNothingMatches() {
+    when(repository.findByAuthorContainingIgnoreCase("inexistente")).thenReturn(List.of());
+
+    assertTrue(service.searchByAuthor("inexistente").isEmpty());
+  }
+
   private Book validBook() {
     return new Book(null, "Clean Code", "Robert C. Martin", "9780132350884", 2008, 464, true);
   }
