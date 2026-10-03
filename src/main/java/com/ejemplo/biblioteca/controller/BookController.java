@@ -18,7 +18,7 @@ public class BookController {
     this.service = service;
   }
 
-  @GetMapping
+  @GetMapping(params = {"!page", "!size"})
   public List<Book> findAll(@RequestParam(name = "title", required = false) String title) {
     return service.searchByTitle(title);
   }
@@ -27,6 +27,11 @@ public class BookController {
   public Page<Book> findAll(
       @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
     return service.findAll(page, size);
+  }
+
+  @GetMapping("/search")
+  public List<Book> searchByAuthor(@RequestParam(name = "author") String author) {
+    return service.searchByAuthor(author);
   }
 
   @GetMapping("/{id}")
