@@ -41,6 +41,15 @@ public class BookService {
   }
 
   @Transactional(readOnly = true)
+  public List<Book> searchByAuthor(String author) {
+    if (author == null || author.isBlank()) {
+      return findAll();
+    }
+
+    return repository.findByAuthorContainingIgnoreCase(author.strip());
+  }
+
+  @Transactional(readOnly = true)
   public Book findById(Long id) {
     return repository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
   }
